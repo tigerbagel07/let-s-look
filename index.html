@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>어디보자 - 기자미팅 장소 큐레이션</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary:#7048e8; --primary-dark:#5f3dc4;
+  --text:#191f28; --sub:#8b95a1; --line:#f2f4f6; --bg:#f9fafb;
+}
+* { box-sizing:border-box; font-family:'Noto Sans KR',sans-serif; }
+body { margin:0 auto; background:var(--bg); max-width:480px; color:var(--text); }
+header { background:linear-gradient(135deg,#7048e8,#5f3dc4); color:#fff; padding:22px 20px; }
+header .t { font-size:22px; font-weight:700; letter-spacing:-0.5px; }
+header .s { font-size:13px; opacity:0.9; margin-top:4px; font-weight:400; }
+#map { width:100%; height:260px; }
+#filters { background:#fff; padding:18px 20px; border-bottom:8px solid var(--line); }
+.frow { margin-bottom:16px; }
+.frow:last-child { margin-bottom:0; }
+.frow label { display:block; font-size:12px; color:var(--sub); margin-bottom:8px; font-weight:700; }
+select { width:100%; padding:12px 14px; border:1.5px solid #e5e8eb; border-radius:12px; font-size:14px; color:var(--text); background:#fff; appearance:none; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b95a1' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>"); background-repeat:no-repeat; background-position:right 14px center; }
+.chips { display:flex; gap:8px; flex-wrap:wrap; }
+.chip { padding:9px 15px; border:1.5px solid #e5e8eb; border-radius:20px; font-size:13px; font-weight:500; cursor:pointer; background:#fff; color:var(--sub); transition:all .15s; }
+.chip.on { background:var(--primary); color:#fff; border-color:var(--primary); }
+#count { padding:16px 20px 8px; font-size:14px; color:var(--sub); font-weight:500; }
+#count b { color:var(--primary); font-weight:700; }
+#list { padding:0 16px 30px; }
+.item { background:#fff; border-radius:16px; padding:18px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,0.04); cursor:pointer; transition:transform .12s, box-shadow .12s; }
+.item:active { transform:scale(0.99); }
+.item h3 { margin:0 0 10px; font-size:17px; font-weight:700; letter-spacing:-0.3px; }
+.rate { display:inline-flex; align-items:center; gap:3px; background:#fff7e6; color:#f59f00; font-size:12px; font-weight:700; padding:3px 8px; border-radius:8px; }
+.norate { background:var(--line); color:var(--sub); font-size:12px; font-weight:500; padding:3px 8px; border-radius:8px; }
+.cattag { display:inline-block; background:#f3f0ff; color:var(--primary); font-size:12px; font-weight:600; padding:3px 9px; border-radius:8px; margin-left:6px; }
+.meta { font-size:13px; color:#4e5968; margin:7px 0; display:flex; align-items:center; gap:5px; }
+.tier { display:inline-block; padding:2px 9px; border-radius:8px; color:#fff; font-size:11px; font-weight:700; margin-left:4px; }
+.room { display:inline-block; padding:2px 9px; border-radius:8px; background:#f3f0ff; color:#7048e8; font-size:11px; font-weight:700; margin-left:5px; }
+.btns { display:flex; gap:7px; margin-top:14px; flex-wrap:wrap; }
+.btns a { flex:1; min-width:66px; text-align:center; text-decoration:none; padding:11px 0; border-radius:11px; font-size:13px; font-weight:700; color:#fff; transition:opacity .12s; }
+.btns a:active { opacity:0.8; }
+.b-tel { background:#ffd43b; color:#191f28 !important; }
+.b-catch { background:#ff8c42; }
+.b-naver { background:#03c75a; }
+.b-map { background:#495057; }
+.empty { text-align:center; color:var(--sub); padding:50px 20px; font-size:14px; }
+.label { text-align:center; padding:5px 11px; background:var(--primary); color:#fff; font-size:12px; font-weight:700; border-radius:16px; white-space:nowrap; box-shadow:0 2px 6px rgba(112,72,232,0.4); }
+.pin { width:18px; height:18px; background:var(--primary); border:3px solid #fff; border-radius:50%; box-shadow:0 2px 5px rgba(0,0,0,0.3); cursor:pointer; }
+</style>
+</head>
+<body>
+<header>
+<div class="t">🔍 어디보자</div>
+<div class="s">기자미팅 장소 큐레이션</div>
+</header>
+<div id="map"></div>
+<div id="filters">
+<div class="frow"><label>가까운 역</label><select id="station"><option value="">전체</option></select></div>
+<div class="frow"><label>카테고리</label><select id="category"><option value="">전체</option></select></div>
+<div class="frow"><label>가격대</label><div class="chips" id="tierChips">
+<div class="chip" data-tier="1">3만↓</div><div class="chip" data-tier="2">3~5만</div>
+<div class="chip" data-tier="3">5~10만</div><div class="chip" data-tier="4">10만↑</div></div></div>
+<div class="frow"><label>평점</label><div class="chips" id="rateChips">
+<div class="chip" data-rate="4.0">4.0 이상</div><div class="chip" data-rate="4.5">4.5 이상</div></div></div>
+<div class="frow"><label>기타</label><div class="chips" id="roomChips">
+<div class="chip" data-room="1">🚪 룸 예약 가능</div></div></div>
+</div>
+<div id="count"></div>
+<div id="list"></div>
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=e45dca6ce102e254324ac6ff8c45e1ba"></script>
+<script>
+var restaurants = [
+{name:"e문어세상 충무로직영점", lat:37.54873484, lng:126.9557985, price:55000, tier:3, cat:"해산물", station:"충정로역", rating:0, room:false, tel:"02-363-0990", catch:"", naver:""},
+{name:"시오 합정점", lat:37.54849431, lng:126.9136398, price:25000, tier:1, cat:"일식", station:"합정역", rating:0, room:false, tel:"0507-1323-9413", catch:"", naver:""},
+{name:"사조미가", lat:37.56420099, lng:126.9661196, price:30000, tier:1, cat:"한정식", station:"서대문역", rating:0, room:true, tel:"0507-1404-1500", catch:"", naver:""},
+{name:"모던눌랑 여의도점", lat:37.5198049, lng:126.9280064, price:50000, tier:2, cat:"중식", station:"샛강역", rating:0, room:true, tel:"02-6484-5980", catch:"https://app.catchtable.co.kr/ct/shop/mn_yeoido?from=share&type=DINING", naver:"https://map.naver.com/p/search/%EB%AA%A8%EB%8D%98%EB%88%8C%EB%9E%91/place/1164752300?c=15.00,0,0,0,dh&placePath=%2Fbooking%3Fentry%3Dbmp%26from%3Dmap%26fromPanelNum%3D2%26timestamp%3D202608100931%26locale%3Dko%26svcName%3Dmap_pcv5%26searchText%3D%EB%AA%A8%EB%8D%98%EB%88%8C%EB%9E%91"},
+{name:"이자카야나무 여의도점", lat:37.52033388, lng:126.9303993, price:30000, tier:1, cat:"주점/이자카야", station:"샛강역", rating:4.5, room:true, tel:"0507-1381-6787", catch:"https://app.catchtable.co.kr/ct/shop/Y2F0Y2hfcnFidXZKSVpDdXhyNXRwNUxVWHRqZz09?from=share&type=DINING", naver:"https://map.naver.com/p/entry/place/1417042543?c=15.00,0,0,0,dh&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202608071720%26locale%3Dko%26svcName%3Dmap_pcv5"},
+{name:"돈블랑 여의도점", lat:37.51976435, lng:126.9302415, price:30000, tier:1, cat:"고기/구이", station:"샛강역", rating:0, room:false, tel:"02-784-9293", catch:"https://app.catchtable.co.kr/ct/shop/donblang_yeuido?from=share&type=DINING", naver:"https://map.naver.com/p/entry/place/1605601457?c=15.00,0,0,0,dh&placePath=%2Fbooking%3FfromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202608071721%26locale%3Dko%26svcName%3Dmap_pcv5"},
+{name:"광화문한옥집", lat:37.5727597, lng:126.974046, price:25000, tier:1, cat:"한식", station:"광화문역", rating:4.3, room:true, tel:"0507-1476-2501", catch:"https://app.catchtable.co.kr/ct/shop/Y2F0Y2hfZDQ2aktqc2FHSlZyeFg2N3ZTeEppUT09?from=share&type=NONE", naver:"https://map.naver.com/p/search/%EA%B4%91%ED%99%94%EB%AC%B8%ED%95%9C%EC%98%A5%EC%A7%91?c=15.00,0,0,0,dh&placePath=%2Fbooking%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202608071721%26locale%3Dko%26svcName%3Dmap_pcv5%26searchText%3D%EA%B4%91%ED%99%94%EB%AC%B8%ED%95%9C%EC%98%A5%EC%A7%91%26entry%3Dbmp"},
+{name:"송전일식", lat:37.56981248, lng:126.9788621, price:60000, tier:3, cat:"해산물", station:"광화문역", rating:0, room:true, tel:"02-739-8282", catch:"", naver:""},
+{name:"친니", lat:37.57184786, lng:126.9761683, price:35000, tier:2, cat:"중식", station:"광화문역", rating:0, room:true, tel:"02-733-3270", catch:"", naver:""},
+{name:"남포면옥", lat:37.5671653, lng:126.9817536, price:25000, tier:1, cat:"한식", station:"을지로입구역", rating:4.2, room:false, tel:"02-777-2269", catch:"", naver:""},
+{name:"청록", lat:37.5623729, lng:126.9909496, price:35000, tier:2, cat:"한정식", station:"충무로역", rating:4.2, room:true, tel:"0507-1433-7917", catch:"", naver:""}
+];
+var tierColor={1:"#12b886",2:"#fab005",3:"#fa5252",4:"#845ef7"};
+var tierText={1:"3만↓",2:"3~5만",3:"5~10만",4:"10만↑"};
+
+var map=new kakao.maps.Map(document.getElementById('map'),{center:new kakao.maps.LatLng(37.55,126.97),level:7});
+var markers=[], overlays=[];
+
+var sel=document.getElementById('station');
+[...new Set(restaurants.map(function(r){return r.station;}))].forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o);});
+var catSel=document.getElementById('category');
+[...new Set(restaurants.map(function(r){return r.cat;}))].forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;catSel.appendChild(o);});
+
+document.querySelectorAll('#tierChips .chip, #rateChips .chip, #roomChips .chip').forEach(function(c){
+c.onclick=function(){ c.classList.toggle('on'); apply(); };
+});
+sel.onchange=apply;
+catSel.onchange=apply;
+
+function apply(){
+var station=sel.value, category=catSel.value;
+var tiers=[...document.querySelectorAll('#tierChips .chip.on')].map(function(c){return +c.dataset.tier;});
+var rates=[...document.querySelectorAll('#rateChips .chip.on')].map(function(c){return +c.dataset.rate;});
+var minRate=rates.length?Math.min.apply(null,rates):0;
+var roomOnly=document.querySelector('#roomChips .chip.on')?true:false;
+var out=restaurants.filter(function(r){
+if(station && r.station!==station) return false;
+if(category && r.cat!==category) return false;
+if(tiers.length && tiers.indexOf(r.tier)===-1) return false;
+if(minRate>0 && r.rating<minRate) return false;
+if(roomOnly && !r.room) return false;
+return true;
+});
+render(out);
+drawMarkers(out);
+}
+
+function drawMarkers(list){
+markers.forEach(function(m){m.setMap(null);});
+overlays.forEach(function(o){o.setMap(null);});
+markers=[]; overlays=[];
+if(!list.length) return;
+var bounds=new kakao.maps.LatLngBounds();
+list.forEach(function(r){
+var pos=new kakao.maps.LatLng(r.lat,r.lng);
+var pin=new kakao.maps.CustomOverlay({position:pos,yAnchor:1,content:'<div class="pin" data-name="'+r.name+'"></div>'});
+pin.setMap(map); markers.push(pin);
+var ov=new kakao.maps.CustomOverlay({position:pos,content:'<div class="label">'+r.name+'</div>',yAnchor:2.6});
+ov.setMap(map); overlays.push(ov);
+bounds.extend(pos);
+});
+map.setBounds(bounds);
+setTimeout(function(){
+document.querySelectorAll('.pin').forEach(function(el){
+el.onclick=function(){
+var nm=el.getAttribute('data-name');
+var r=restaurants.find(function(x){return x.name===nm;});
+if(r) openCard(r);
+};
+});
+},100);
+}
+
+function cardHtml(r){
+var btns='<a class="b-tel" href="tel:'+r.tel+'">📞 전화</a>';
+if(r.naver) btns+='<a class="b-naver" href="'+r.naver+'" target="_blank">🟢 네이버예약</a>';
+if(r.catch) btns+='<a class="b-catch" href="'+r.catch+'" target="_blank">🍽️ 캐치테이블</a>';
+btns+='<a class="b-map" href="https://map.kakao.com/link/to/'+encodeURIComponent(r.name)+','+r.lat+','+r.lng+'" target="_blank">🗺️ 길찾기</a>';
+var rateHtml=r.rating?'<span class="rate">⭐ '+r.rating+'</span>':'<span class="norate">평점 정보 없음</span>';
+var roomBadge=r.room?'<span class="room">🚪 룸</span>':'';
+return '<h3>'+r.name+'</h3>'+
+'<div class="meta">'+rateHtml+'<span class="cattag">'+r.cat+'</span></div>'+
+'<div class="meta">🚇 '+r.station+'</div>'+
+'<div class="meta">💰 '+r.price.toLocaleString()+'원/인 <span class="tier" style="background:'+tierColor[r.tier]+'">'+tierText[r.tier]+'</span>'+roomBadge+'</div>'+
+'<div class="btns">'+btns+'</div>';
+}
+
+function render(list){
+document.getElementById('count').innerHTML='총 <b>'+list.length+'</b>곳';
+var box=document.getElementById('list');
+if(!list.length){ box.innerHTML='<div class="empty">조건에 맞는 맛집이 없어요 😢</div>'; return; }
+box.innerHTML=list.map(function(r){ return '<div class="item">'+cardHtml(r)+'</div>'; }).join('');
+}
+
+function openCard(r){
+document.getElementById('list').innerHTML='<div class="item">'+cardHtml(r)+'</div>';
+document.getElementById('count').innerHTML='선택한 맛집';
+map.panTo(new kakao.maps.LatLng(r.lat,r.lng));
+}
+
+render(restaurants);
+drawMarkers(restaurants);
+</script>
+</body>
+</html>
+

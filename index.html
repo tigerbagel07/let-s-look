@@ -12,7 +12,6 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#7048e8">
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root { --primary:#7048e8; --primary-dark:#5f3dc4; --text:#191f28; --sub:#8b95a1; --line:#f2f4f6; --bg:#f9fafb; }
@@ -20,16 +19,15 @@
 body { margin:0 auto; background:var(--bg); max-width:480px; color:var(--text); }
 header { position:relative; overflow:hidden; text-align:center; background:linear-gradient(135deg,#7048e8,#5f3dc4); color:#fff; padding:30px 20px 34px; }
 header::before { content:""; position:absolute; left:0; right:0; bottom:-1px; height:40px; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'><path d='M0,60 C150,120 350,0 600,60 C850,120 1050,0 1200,60 L1200,120 L0,120 Z' fill='%23ffffff' opacity='0.12'/></svg>"); background-size:cover; }
-header::after { content:""; position:absolute; top:0; left:0; right:0; bottom:0; opacity:0.10; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><path d='M0,30 Q15,15 30,30 T60,30' stroke='%23ffffff' fill='none' stroke-width='2'/></svg>"); }
 header .t { position:relative; display:inline-block; font-size:28px; font-weight:700; letter-spacing:-0.5px; box-shadow:inset 0 -12px 0 rgba(255,255,255,0.3); padding:0 6px; }
 header .s { position:relative; font-size:13px; opacity:0.85; margin-top:10px; font-weight:400; }
-header .copy { position:relative; font-size:15px; font-weight:700; margin-top:16px; opacity:0.97; letter-spacing:-0.3px; display:inline-block; padding-top:14px; border-top:1px solid rgba(255,255,255,0.25); }
+header .copy { position:relative; font-size:15px; font-weight:700; margin-top:16px; opacity:0.97; display:inline-block; padding-top:14px; border-top:1px solid rgba(255,255,255,0.25); }
 #map { width:100%; height:260px; }
 #filters { background:#fff; padding:18px 20px; border-bottom:8px solid var(--line); }
 .frow { margin-bottom:16px; }
 .frow:last-child { margin-bottom:0; }
 .frow label { display:block; font-size:12px; color:var(--sub); margin-bottom:8px; font-weight:700; }
-select { width:100%; padding:12px 14px; border:1.5px solid #e5e8eb; border-radius:12px; font-size:14px; color:var(--text); background:#fff; appearance:none; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b95a1' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>"); background-repeat:no-repeat; background-position:right 14px center; }
+select { width:100%; padding:12px 14px; border:1.5px solid #e5e8eb; border-radius:12px; font-size:14px; color:var(--text); background:#fff; }
 .chips { display:flex; gap:8px; flex-wrap:wrap; }
 .chip { padding:9px 15px; border:1.5px solid #e5e8eb; border-radius:20px; font-size:13px; font-weight:500; cursor:pointer; background:#fff; color:var(--sub); }
 .chip.on { background:var(--primary); color:#fff; border-color:var(--primary); }
@@ -37,8 +35,7 @@ select { width:100%; padding:12px 14px; border:1.5px solid #e5e8eb; border-radiu
 #count b { color:var(--primary); font-weight:700; }
 #list { padding:0 16px 20px; }
 .item { background:#fff; border-radius:16px; padding:18px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,0.04); cursor:pointer; }
-.item:active { transform:scale(0.99); }
-.item h3 { margin:0 0 10px; font-size:17px; font-weight:700; letter-spacing:-0.3px; }
+.item h3 { margin:0 0 10px; font-size:17px; font-weight:700; }
 .rate { display:inline-flex; align-items:center; gap:3px; background:#fff7e6; color:#f59f00; font-size:12px; font-weight:700; padding:3px 8px; border-radius:8px; }
 .norate { background:var(--line); color:var(--sub); font-size:12px; font-weight:500; padding:3px 8px; border-radius:8px; }
 .cattag { display:inline-block; background:#f3f0ff; color:var(--primary); font-size:12px; font-weight:600; padding:3px 9px; border-radius:8px; margin-left:6px; }
@@ -79,6 +76,25 @@ footer { text-align:center; padding:24px 20px 30px; font-size:12px; color:var(--
 <div id="list"></div>
 <footer>© Tigerbagel. All rights reserved.</footer>
 <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=e45dca6ce102e254324ac6ff8c45e1ba"></script>
+<script>
+var restaurants = [
+{name:"e문어세상 충무로직영점", lat:37.54873484, lng:126.9557985, price:55000, tier:3, cat:"해산물", station:"충정로역", rating:0, room:false, tel:"02-363-0990", catch:"", naver:""},
+{name:"시오 합정점", lat:37.54849431, lng:126.9136398, price:25000, tier:1, cat:"일식", station:"합정역", rating:0, room:false, tel:"0507-1323-9413", catch:"", naver:""},
+{name:"사조미가", lat:37.56420099, lng:126.9661196, price:30000, tier:1, cat:"한정식", station:"서대문역", rating:0, room:true, tel:"0507-1404-1500", catch:"", naver:""},
+{name:"모던눌랑 여의도점", lat:37.5198049, lng:126.9280064, price:50000, tier:2, cat:"중식", station:"샛강역", rating:0, room:true, tel:"02-6484-5980", catch:"https://app.catchtable.co.kr/ct/shop/mn_yeoido?from=share&type=DINING", naver:"https://map.naver.com/p/search/%EB%AA%A8%EB%8D%98%EB%88%8C%EB%9E%91/place/1164752300?c=15.00,0,0,0,dh&placePath=%2Fbooking%3Fentry%3Dbmp%26from%3Dmap%26fromPanelNum%3D2%26timestamp%3D202608100931%26locale%3Dko%26svcName%3Dmap_pcv5%26searchText%3D%EB%AA%A8%EB%8D%98%EB%88%8C%EB%9E%91"},
+{name:"이자카야나무 여의도점", lat:37.52033388, lng:126.9303993, price:30000, tier:1, cat:"주점/이자카야", station:"샛강역", rating:4.5, room:true, tel:"0507-1381-6787", catch:"https://app.catchtable.co.kr/ct/shop/Y2F0Y2hfcnFidXZKSVpDdXhyNXRwNUxVWHRqZz09?from=share&type=DINING", naver:"https://map.naver.com/p/entry/place/1417042543?c=15.00,0,0,0,dh&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202608071720%26locale%3Dko%26svcName%3Dmap_pcv5"},
+{name:"돈블랑 여의도점", lat:37.51976435, lng:126.9302415, price:30000, tier:1, cat:"고기/구이", station:"샛강역", rating:0, room:false, tel:"02-784-9293", catch:"https://app.catchtable.co.kr/ct/shop/donblang_yeuido?from=share&type=DINING", naver:"https://map.naver.com/p/entry/place/1605601457?c=15.00,0,0,0,dh&placePath=%2Fbooking%3FfromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202608071721%26locale%3Dko%26svcName%3Dmap_pcv5"},
+{name:"광화문한옥집", lat:37.5727597, lng:126.974046, price:25000, tier:1, cat:"한식", station:"광화문역", rating:4.3, room:true, tel:"0507-1476-2501", catch:"https://app.catchtable.co.kr/ct/shop/Y2F0Y2hfZDQ2aktqc2FHSlZyeFg2N3ZTeEppUT09?from=share&type=NONE", naver:"https://map.naver.com/p/search/%EA%B4%91%ED%99%94%EB%AC%B8%ED%95%9C%EC%98%A5%EC%A7%91?c=15.00,0,0,0,dh&placePath=%2Fbooking%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202608071721%26locale%3Dko%26svcName%3Dmap_pcv5%26searchText%3D%EA%B4%91%ED%99%94%EB%AC%B8%ED%95%9C%EC%98%A5%EC%A7%91%26entry%3Dbmp"},
+{name:"송전일식", lat:37.56981248, lng:126.9788621, price:60000, tier:3, cat:"해산물", station:"광화문역", rating:0, room:true, tel:"02-739-8282", catch:"", naver:""},
+{name:"친니", lat:37.57184786, lng:126.9761683, price:35000, tier:2, cat:"중식", station:"광화문역", rating:0, room:true, tel:"02-733-3270", catch:"", naver:""},
+{name:"남포면옥", lat:37.5671653, lng:126.9817536, price:25000, tier:1, cat:"한식", station:"을지로입구역", rating:4.2, room:false, tel:"02-777-2269", catch:"", naver:""},
+{name:"청록", lat:37.5623729, lng:126.9909496, price:35000, tier:2, cat:"한정식", station:"충무로역", rating:4.2, room:true, tel:"0507-1433-7917", catch:"", naver:""}
+];
+var tierColor={1:"#12b886",2:"#fab005",3:"#fa5252",4:"#845ef7"};
+var tierText={1:"3만↓",2:"3~5만",3:"5~10만",4:"10만↑"};
+
+var map=new kakao.maps.Map(document.getElementById('map'),{center:new kakao.maps.LatLng(37.55,126.97),level:7});
+var markers=[], overlays=[];
 
 var sel=document.getElementById('station');
 [...new Set(restaurants.map(function(r){return r.station;}))].forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o);});

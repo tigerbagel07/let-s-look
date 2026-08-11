@@ -4,28 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>어디보자 - 미팅 장소 큐레이터</title>
+<meta property="og:title" content="어디보자 - 미팅 장소 큐레이터">
+<meta property="og:description" content="한번을 만나도, 마음을 담아">
+<meta property="og:image" content="https://tigerbagel07.github.io/let-s-see/og-image.png">
+<meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-
-<!-- 홈 화면 아이콘 / PWA 설정 -->
-<link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="어디보자">
-<meta name="theme-color" content="#7048e8">
-
 <style>
-:root {
-  --primary:#7048e8; --primary-dark:#5f3dc4;
-  --text:#191f28; --sub:#8b95a1; --line:#f2f4f6; --bg:#f9fafb;
-}
+:root { --primary:#7048e8; --primary-dark:#5f3dc4; --text:#191f28; --sub:#8b95a1; --line:#f2f4f6; --bg:#f9fafb; }
 * { box-sizing:border-box; font-family:'Noto Sans KR',sans-serif; }
 body { margin:0 auto; background:var(--bg); max-width:480px; color:var(--text); }
-header { background:linear-gradient(135deg,#7048e8,#5f3dc4); color:#fff; padding:22px 20px; }
-header .t { font-size:22px; font-weight:700; letter-spacing:-0.5px; }
-header .s { font-size:13px; opacity:0.9; margin-top:4px; font-weight:400; }
+header { position:relative; overflow:hidden; text-align:center; background:linear-gradient(135deg,#7048e8,#5f3dc4); color:#fff; padding:30px 20px 34px; }
+header::before { content:""; position:absolute; left:0; right:0; bottom:-1px; height:40px; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'><path d='M0,60 C150,120 350,0 600,60 C850,120 1050,0 1200,60 L1200,120 L0,120 Z' fill='%23ffffff' opacity='0.12'/></svg>"); background-size:cover; }
+header::after { content:""; position:absolute; top:0; left:0; right:0; bottom:0; opacity:0.10; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><path d='M0,30 Q15,15 30,30 T60,30' stroke='%23ffffff' fill='none' stroke-width='2'/></svg>"); }
+header .t { position:relative; display:inline-block; font-size:28px; font-weight:700; letter-spacing:-0.5px; box-shadow:inset 0 -12px 0 rgba(255,255,255,0.3); padding:0 6px; }
+header .s { position:relative; font-size:13px; opacity:0.85; margin-top:10px; font-weight:400; }
+header .copy { position:relative; font-size:15px; font-weight:700; margin-top:16px; opacity:0.97; letter-spacing:-0.3px; display:inline-block; padding-top:14px; border-top:1px solid rgba(255,255,255,0.25); }
 #map { width:100%; height:260px; }
 #filters { background:#fff; padding:18px 20px; border-bottom:8px solid var(--line); }
 .frow { margin-bottom:16px; }
@@ -33,23 +27,22 @@ header .s { font-size:13px; opacity:0.9; margin-top:4px; font-weight:400; }
 .frow label { display:block; font-size:12px; color:var(--sub); margin-bottom:8px; font-weight:700; }
 select { width:100%; padding:12px 14px; border:1.5px solid #e5e8eb; border-radius:12px; font-size:14px; color:var(--text); background:#fff; appearance:none; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b95a1' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>"); background-repeat:no-repeat; background-position:right 14px center; }
 .chips { display:flex; gap:8px; flex-wrap:wrap; }
-.chip { padding:9px 15px; border:1.5px solid #e5e8eb; border-radius:20px; font-size:13px; font-weight:500; cursor:pointer; background:#fff; color:var(--sub); transition:all .15s; }
+.chip { padding:9px 15px; border:1.5px solid #e5e8eb; border-radius:20px; font-size:13px; font-weight:500; cursor:pointer; background:#fff; color:var(--sub); }
 .chip.on { background:var(--primary); color:#fff; border-color:var(--primary); }
 #count { padding:16px 20px 8px; font-size:14px; color:var(--sub); font-weight:500; }
 #count b { color:var(--primary); font-weight:700; }
-#list { padding:0 16px 30px; }
-.item { background:#fff; border-radius:16px; padding:18px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,0.04); cursor:pointer; transition:transform .12s, box-shadow .12s; }
+#list { padding:0 16px 20px; }
+.item { background:#fff; border-radius:16px; padding:18px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,0.04); cursor:pointer; }
 .item:active { transform:scale(0.99); }
 .item h3 { margin:0 0 10px; font-size:17px; font-weight:700; letter-spacing:-0.3px; }
 .rate { display:inline-flex; align-items:center; gap:3px; background:#fff7e6; color:#f59f00; font-size:12px; font-weight:700; padding:3px 8px; border-radius:8px; }
 .norate { background:var(--line); color:var(--sub); font-size:12px; font-weight:500; padding:3px 8px; border-radius:8px; }
 .cattag { display:inline-block; background:#f3f0ff; color:var(--primary); font-size:12px; font-weight:600; padding:3px 9px; border-radius:8px; margin-left:6px; }
-.meta { font-size:13px; color:#4e5968; margin:7px 0; display:flex; align-items:center; gap:5px; }
+.meta { font-size:13px; color:#4e5968; margin:7px 0; }
 .tier { display:inline-block; padding:2px 9px; border-radius:8px; color:#fff; font-size:11px; font-weight:700; margin-left:4px; }
 .room { display:inline-block; padding:2px 9px; border-radius:8px; background:#f3f0ff; color:#7048e8; font-size:11px; font-weight:700; margin-left:5px; }
-.btns { display:flex; gap:7px; margin-top:14px; flex-wrap:wrap; }
-.btns a { flex:1; min-width:66px; text-align:center; text-decoration:none; padding:11px 0; border-radius:11px; font-size:13px; font-weight:700; color:#fff; transition:opacity .12s; }
-.btns a:active { opacity:0.8; }
+.btns { display:flex; gap:6px; margin-top:14px; }
+.btns a { flex:1; text-align:center; text-decoration:none; padding:11px 0; border-radius:11px; font-size:13px; font-weight:700; color:#fff; white-space:nowrap; }
 .b-tel { background:#ffd43b; color:#191f28 !important; }
 .b-catch { background:#ff8c42; }
 .b-naver { background:#03c75a; }
@@ -57,12 +50,14 @@ select { width:100%; padding:12px 14px; border:1.5px solid #e5e8eb; border-radiu
 .empty { text-align:center; color:var(--sub); padding:50px 20px; font-size:14px; }
 .label { text-align:center; padding:5px 11px; background:var(--primary); color:#fff; font-size:12px; font-weight:700; border-radius:16px; white-space:nowrap; box-shadow:0 2px 6px rgba(112,72,232,0.4); }
 .pin { width:18px; height:18px; background:var(--primary); border:3px solid #fff; border-radius:50%; box-shadow:0 2px 5px rgba(0,0,0,0.3); cursor:pointer; }
+footer { text-align:center; padding:24px 20px 30px; font-size:12px; color:var(--sub); border-top:1px solid var(--line); }
 </style>
 </head>
 <body>
 <header>
 <div class="t">🔍 어디보자</div>
 <div class="s">미팅 장소 큐레이터</div>
+<div class="copy">한번을 만나도, 마음을 담아</div>
 </header>
 <div id="map"></div>
 <div id="filters">
@@ -78,6 +73,7 @@ select { width:100%; padding:12px 14px; border:1.5px solid #e5e8eb; border-radiu
 </div>
 <div id="count"></div>
 <div id="list"></div>
+<footer>© Tigerbagel. All rights reserved.</footer>
 <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=e45dca6ce102e254324ac6ff8c45e1ba"></script>
 <script>
 var restaurants = [
@@ -156,8 +152,8 @@ if(r) openCard(r);
 
 function cardHtml(r){
 var btns='<a class="b-tel" href="tel:'+r.tel+'">📞 전화</a>';
-if(r.naver) btns+='<a class="b-naver" href="'+r.naver+'" target="_blank">🟢 네이버예약</a>';
-if(r.catch) btns+='<a class="b-catch" href="'+r.catch+'" target="_blank">🍽️ 캐치테이블</a>';
+if(r.naver) btns+='<a class="b-naver" href="'+r.naver+'" target="_blank">🟢 네이버</a>';
+if(r.catch) btns+='<a class="b-catch" href="'+r.catch+'" target="_blank">🍽️ 캐치</a>';
 btns+='<a class="b-map" href="https://map.kakao.com/link/to/'+encodeURIComponent(r.name)+','+r.lat+','+r.lng+'" target="_blank">🗺️ 길찾기</a>';
 var rateHtml=r.rating?'<span class="rate">⭐ '+r.rating+'</span>':'<span class="norate">평점 정보 없음</span>';
 var roomBadge=r.room?'<span class="room">🚪 룸</span>':'';

@@ -77,35 +77,37 @@ footer { text-align:center; padding:24px 20px 30px; font-size:12px; color:var(--
 <footer>© Tigerbagel. All rights reserved.</footer>
 <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=e45dca6ce102e254324ac6ff8c45e1ba"></script>
 <script>
-var restaurants = [
-{name:"e문어세상 충무로직영점", lat:37.54873484, lng:126.9557985, price:55000, tier:3, cat:"해산물", station:"충정로역", rating:0, room:false, tel:"02-363-0990", catch:"", naver:""},
-{name:"시오 합정점", lat:37.54849431, lng:126.9136398, price:25000, tier:1, cat:"일식", station:"합정역", rating:0, room:false, tel:"0507-1323-9413", catch:"", naver:""},
-{name:"사조미가", lat:37.56420099, lng:126.9661196, price:30000, tier:1, cat:"한정식", station:"서대문역", rating:0, room:true, tel:"0507-1404-1500", catch:"", naver:""},
-{name:"모던눌랑 여의도점", lat:37.5198049, lng:126.9280064, price:50000, tier:2, cat:"중식", station:"샛강역", rating:0, room:true, tel:"02-6484-5980", catch:"https://app.catchtable.co.kr/ct/shop/mn_yeoido?from=share&type=DINING", naver:"https://map.naver.com/p/search/%EB%AA%A8%EB%8D%98%EB%88%8C%EB%9E%91/place/1164752300?c=15.00,0,0,0,dh&placePath=%2Fbooking%3Fentry%3Dbmp%26from%3Dmap%26fromPanelNum%3D2%26timestamp%3D202608100931%26locale%3Dko%26svcName%3Dmap_pcv5%26searchText%3D%EB%AA%A8%EB%8D%98%EB%88%8C%EB%9E%91"},
-{name:"이자카야나무 여의도점", lat:37.52033388, lng:126.9303993, price:30000, tier:1, cat:"주점/이자카야", station:"샛강역", rating:4.5, room:true, tel:"0507-1381-6787", catch:"https://app.catchtable.co.kr/ct/shop/Y2F0Y2hfcnFidXZKSVpDdXhyNXRwNUxVWHRqZz09?from=share&type=DINING", naver:"https://map.naver.com/p/entry/place/1417042543?c=15.00,0,0,0,dh&placePath=%2Fhome%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202608071720%26locale%3Dko%26svcName%3Dmap_pcv5"},
-{name:"돈블랑 여의도점", lat:37.51976435, lng:126.9302415, price:30000, tier:1, cat:"고기/구이", station:"샛강역", rating:0, room:false, tel:"02-784-9293", catch:"https://app.catchtable.co.kr/ct/shop/donblang_yeuido?from=share&type=DINING", naver:"https://map.naver.com/p/entry/place/1605601457?c=15.00,0,0,0,dh&placePath=%2Fbooking%3FfromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202608071721%26locale%3Dko%26svcName%3Dmap_pcv5"},
-{name:"광화문한옥집", lat:37.5727597, lng:126.974046, price:25000, tier:1, cat:"한식", station:"광화문역", rating:4.3, room:true, tel:"0507-1476-2501", catch:"https://app.catchtable.co.kr/ct/shop/Y2F0Y2hfZDQ2aktqc2FHSlZyeFg2N3ZTeEppUT09?from=share&type=NONE", naver:"https://map.naver.com/p/search/%EA%B4%91%ED%99%94%EB%AC%B8%ED%95%9C%EC%98%A5%EC%A7%91?c=15.00,0,0,0,dh&placePath=%2Fbooking%3Ffrom%3Dmap%26fromPanelNum%3D1%26additionalHeight%3D76%26timestamp%3D202608071721%26locale%3Dko%26svcName%3Dmap_pcv5%26searchText%3D%EA%B4%91%ED%99%94%EB%AC%B8%ED%95%9C%EC%98%A5%EC%A7%91%26entry%3Dbmp"},
-{name:"송전일식", lat:37.56981248, lng:126.9788621, price:60000, tier:3, cat:"해산물", station:"광화문역", rating:0, room:true, tel:"02-739-8282", catch:"", naver:""},
-{name:"친니", lat:37.57184786, lng:126.9761683, price:35000, tier:2, cat:"중식", station:"광화문역", rating:0, room:true, tel:"02-733-3270", catch:"", naver:""},
-{name:"남포면옥", lat:37.5671653, lng:126.9817536, price:25000, tier:1, cat:"한식", station:"을지로입구역", rating:4.2, room:false, tel:"02-777-2269", catch:"", naver:""},
-{name:"청록", lat:37.5623729, lng:126.9909496, price:35000, tier:2, cat:"한정식", station:"충무로역", rating:4.2, room:true, tel:"0507-1433-7917", catch:"", naver:""}
-];
+var restaurants = [];
 var tierColor={1:"#12b886",2:"#fab005",3:"#fa5252",4:"#845ef7"};
 var tierText={1:"3만↓",2:"3~5만",3:"5~10만",4:"10만↑"};
 
 var map=new kakao.maps.Map(document.getElementById('map'),{center:new kakao.maps.LatLng(37.55,126.97),level:7});
 var markers=[], overlays=[];
-
 var sel=document.getElementById('station');
-[...new Set(restaurants.map(function(r){return r.station;}))].forEach(function(s){var o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o);});
 var catSel=document.getElementById('category');
-[...new Set(restaurants.map(function(r){return r.cat;}))].forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;catSel.appendChild(o);});
 
-document.querySelectorAll('#tierChips .chip, #rateChips .chip, #roomChips .chip').forEach(function(c){
-c.onclick=function(){ c.classList.toggle('on'); apply(); };
+// data.json 불러오기
+fetch('data.json')
+.then(function(res){ return res.json(); })
+.then(function(data){
+  restaurants = data;
+  initFilters();
+  render(restaurants);
+  drawMarkers(restaurants);
+})
+.catch(function(e){
+  document.getElementById('list').innerHTML='<div class="empty">데이터를 불러오지 못했어요 😢<br>(data.json 확인 필요)</div>';
 });
-sel.onchange=apply;
-catSel.onchange=apply;
+
+function initFilters(){
+  [...new Set(restaurants.map(function(r){return r.station;}))].forEach(function(s){ if(!s) return; var o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o); });
+  [...new Set(restaurants.map(function(r){return r.cat;}))].forEach(function(c){ if(!c) return; var o=document.createElement('option');o.value=c;o.textContent=c;catSel.appendChild(o); });
+  document.querySelectorAll('#tierChips .chip, #rateChips .chip, #roomChips .chip').forEach(function(c){
+    c.onclick=function(){ c.classList.toggle('on'); apply(); };
+  });
+  sel.onchange=apply;
+  catSel.onchange=apply;
+}
 
 function apply(){
 var station=sel.value, category=catSel.value;
@@ -152,7 +154,8 @@ if(r) openCard(r);
 }
 
 function cardHtml(r){
-var btns='<a class="b-tel" href="tel:'+r.tel+'">📞 전화</a>';
+var btns='';
+if(r.tel) btns+='<a class="b-tel" href="tel:'+r.tel+'">📞 전화</a>';
 if(r.naver) btns+='<a class="b-naver" href="'+r.naver+'" target="_blank">🟢 네이버</a>';
 if(r.catch) btns+='<a class="b-catch" href="'+r.catch+'" target="_blank">🍽️ 캐치</a>';
 btns+='<a class="b-map" href="https://map.kakao.com/link/to/'+encodeURIComponent(r.name)+','+r.lat+','+r.lng+'" target="_blank">🗺️ 길찾기</a>';
@@ -177,9 +180,6 @@ document.getElementById('list').innerHTML='<div class="item">'+cardHtml(r)+'</di
 document.getElementById('count').innerHTML='선택한 맛집';
 map.panTo(new kakao.maps.LatLng(r.lat,r.lng));
 }
-
-render(restaurants);
-drawMarkers(restaurants);
 </script>
 </body>
 </html>
